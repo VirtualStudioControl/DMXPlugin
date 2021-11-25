@@ -101,6 +101,7 @@ def _handleRequestAuth(client, message):
     challenge_len = message[2+salt_len]
     challenge = message[3+salt_len: 3+salt_len+challenge_len]
     authBytes = generateAuthBytes(client.username, client.password, salt, challenge)
+    logger.info("SALT: {}, CHALLENGE: {}, AUHTBYTES: {}".format(salt, challenge, authBytes))
     client.sendMessage(createAuthenticate(authBytes=authBytes))
 
 

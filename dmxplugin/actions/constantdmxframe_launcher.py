@@ -1,4 +1,5 @@
-
+from dmxplugin.actions.setdmxframe.setdmxframe_button import ButtonSetDMXFrameAction
+from dmxplugin.actions.setdmxframe.setdmxframe_imagebutton import ImagebuttonSetDMXFrameAction
 from dmxplugin.common.pluginloader import ROOT_DIRECTORY
 
 from virtualstudio.common.action_manager.actionmanager import registerCategoryIcon
@@ -16,16 +17,16 @@ class SetConstantFrameLauncher(ActionLauncher):
         registerCategoryIcon(["DMX"], ROOT_DIRECTORY + "/assets/icons/category/dmx.png")
 
         self.ACTIONS = {
-            #CONTROL_TYPE_BUTTON: ButtonTransitionAction,
+            CONTROL_TYPE_BUTTON: ButtonSetDMXFrameAction,
             #CONTROL_TYPE_FADER: FaderDebugAction,
-            #CONTROL_TYPE_IMAGE_BUTTON: ImageButtonTransitionAction,
+            CONTROL_TYPE_IMAGE_BUTTON: ImagebuttonSetDMXFrameAction,
             #CONTROL_TYPE_ROTARY_ENCODER: RotaryEncoderDebugAction
         }
 
     #region Metadata
 
     def getName(self):
-        return "Set Preset"
+        return "Set DMXFrame"
 
     def getIcon(self):
         return readPNGIcon(ROOT_DIRECTORY + "/assets/icons/actions/lightbulbs.png")
@@ -45,5 +46,5 @@ class SetConstantFrameLauncher(ActionLauncher):
     def getActionUI(self, controlType: str) -> Tuple[str, str]:
         return UI_TYPE_QTUI, \
                icontools.encodeIconData(
-                   filewriter.readFileBinary(ROOT_DIRECTORY + "/assets/ui/actions/setchannel.ui"))
+                   filewriter.readFileBinary(ROOT_DIRECTORY + "/assets/ui/actions/setdmxframe.ui"))
     #endregion
