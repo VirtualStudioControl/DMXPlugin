@@ -18,7 +18,7 @@ class TCPClient(Thread):
         self.username: str = username
         self.password: str = password
 
-        self.sock = None
+        self.sock: socket.socket = None
         self.timeout: Optional[float] = None
         self.running = False
 
@@ -69,6 +69,7 @@ class TCPClient(Thread):
             self.sock.close()
 
     def onAuthenticated(self):
+        self.isConnected = True
         if self.onAuth is not None:
             self.onAuth()
 

@@ -58,6 +58,8 @@ class ConnectionHandler():
         self._sendMsgInternal(data)
 
     def _sendMsgInternal(self, data: bytes):
+        if not self.isConnected():
+            self.connect()
         with self.clientLock:
             self.client.sendMessage(data)
 
