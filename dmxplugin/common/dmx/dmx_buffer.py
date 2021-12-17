@@ -9,6 +9,9 @@ class DMXBuffer:
         super(DMXBuffer, self).__init__()
         self.buffers: Dict[int, bytearray] = {}
 
+    def listUniverses(self):
+        return list(self.buffers.keys())
+
     def loadData(self, content: bytes):
         universeCount = getInt(content, 0)
 
@@ -26,7 +29,8 @@ class DMXBuffer:
         if universe not in self.buffers:
             self.buffers[universe] = bytearray(512)
         value = min(0xff, max(value, 0))
-        self.buffers[universe][channel] = value & 0xff
+        if 0 <= channel < 512:
+            self.buffers[universe][channel] = value & 0xff
 
     def getChannel(self, universe, channel):
         if universe not in self.buffers:
@@ -34,7 +38,7 @@ class DMXBuffer:
         return self.buffers[universe][channel]
 
     def setFrame(self, universe, data):
-        self.buffers[universe] = data
+        self.buffers[universe] = bytearray(data)
 
     def getFrame(self, universe):
         if universe not in self.buffers:

@@ -44,18 +44,18 @@ class TCPClient(Thread):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(self.timeout)
         self.logger.debug("Connectiong to {}:{}".format(self.address, self.port))
-        self.sock.connect((self.address, self.port))
         try:
+            self.sock.connect((self.address, self.port))
             self.sendMessage(createHello(self.username))
             while self.running:
                 try:
-                    length = self.sock.recv(4)  # 16 kb buffer
-                    if len(length) < 4:
-                        continue
+                    length = self.sock.recv(4)
+                    while len(length) < 4:
+                        length += self.sock.recv(4 - len(length))  # 16 kb buffer
                     pkglen = getInt(length, start=0)
                     data = bytearray()
                     while len(data) < pkglen:
-                        data += self.sock.recv(pkglen)
+                        data += self.sock.recv(pkglen - len(data))
 
                     self.logger.debug("Message Recieved: {:08X} {}".format(getInt(length, start=0), str(data)))
                     self.onMessageRecv(data)
@@ -64,9 +64,13 @@ class TCPClient(Thread):
 
         except ConnectionAbortedError:
             pass # Socket closed by another thread
+        except Exception as ex:
+            self.logger.error(ex)
         finally:
             self.isConnected = False
+            self.running = False
             self.sock.close()
+            self.sock = None
 
     def onAuthenticated(self):
         self.isConnected = True

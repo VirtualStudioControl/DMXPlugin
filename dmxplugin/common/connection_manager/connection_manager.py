@@ -37,7 +37,11 @@ def sendMessage(account_uuid, message: bytes):
     CONNECTIONS[account_uuid].sendMessage(message)
 
 #region DMX
-
+def getDMXDeviceManager(account_uuid):
+    if account_uuid not in CONNECTIONS:
+        account = account_manager.getAccountByUUID(account_uuid)
+        createClient(account)
+    return CONNECTIONS[account_uuid].device_manager
 
 def updateDMXFrameBuffer(account_uuid):
     if account_uuid not in CONNECTIONS:
